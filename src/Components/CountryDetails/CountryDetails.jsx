@@ -10,23 +10,33 @@
 //     </h1>     
 //   );
 // };  
+
+
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCountryIndviData } from "../../api/postApi";
+import { getCountryIndvData } from "../../api/postApi";
 
 const CountryDetails = () => {
   const { id } = useParams();
 
   const [country, setCountry] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCountry = async () => {
       try {
-        const res = await getCountryIndviData(id);
-        setCountry(res.data);
+        const countryData = await getCountryIndvData(id);
+        setCountry(countryData ? [countryData] : []);
+        setError(null);
       } catch (error) {
         console.error(error);
+        setError(
+          error.response?.status
+            ? `API error ${error.response.status}: ${error.message}`
+            : error.message || "Failed to load country details"
+        );
       } finally {
         setLoading(false);
       }
@@ -39,6 +49,23 @@ const CountryDetails = () => {
     return (
       <div className="min-h-screen flex justify-center items-center bg-slate-950">
         <h1 className="text-3xl text-white">Loading...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-slate-950 text-white">
+        <h1 className="text-2xl mb-4">Error loading country details</h1>
+        <p className="mb-6">{error}</p>
+      </div>
+    );
+  }
+
+  if (!country.length) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-slate-950 text-white">
+        <h1 className="text-2xl">Country not found</h1>
       </div>
     );
   }

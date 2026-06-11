@@ -198,14 +198,21 @@ import { getAllCountries } from "../../api/postApi";
 const Country = () => {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const res = await getAllCountries(); // এখানে ভুল ছিল
-        setCountries(res.data);
+        const data = await getAllCountries();
+        setCountries(data);
+        setError(null);
       } catch (error) {
         console.error("Error fetching countries:", error);
+        setError(
+          error.response?.status
+            ? `API error ${error.response.status}: ${error.message}`
+            : error.message || "Failed to load countries"
+        );
       } finally {
         setLoading(false);
       }
@@ -220,6 +227,39 @@ const Country = () => {
         <h1 className="text-3xl font-bold text-white">
           Loading Countries...
         </h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-slate-950 text-white">
+        <h1 className="text-2xl mb-4">Error loading countries</h1>
+        <p className="mb-6">{error}</p>
+        <button
+          onClick={() => {
+            setLoading(true);
+            setError(null);
+            // re-run effect by calling fetch directly
+            (async () => {
+              try {
+                const data = await getAllCountries();
+                setCountries(data);
+              } catch (err) {
+                setError(
+                  err.response?.status
+                    ? `API error ${err.response.status}: ${err.message}`
+                    : err.message || "Failed to load countries"
+                );
+              } finally {
+                setLoading(false);
+              }
+            })();
+          }}
+          className="px-4 py-2 bg-blue-600 rounded"
+        >
+          Retry
+        </button>
       </div>
     );
   }
