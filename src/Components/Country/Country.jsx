@@ -62,18 +62,138 @@
 
 
 
-//chatgpt
-import axios from "axios";
+// //chatgpt
+// import axios from "axios";
+// import { useEffect, useState } from "react";
+// import { NavLink } from "react-router-dom";
+
+// const api = axios.create({
+//   baseURL: "https://restcountries.com/v3.1",
+// });
+
+// export const getAllCountries = () => {
+//   return api.get("/all?fields=name,capital,population,flags");
+// };
+
+
+
+// //http get method for indivi.country name 
+
+// export const getCountryIndviData = (name) => {
+//   return api.get(`/name/${name}?fields=name,capital,population,flags,regions,subregion,languages,currencies`);
+// };
+
+
+
+
+// const Country = () => {
+//   const [countries, setCountries] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const fetchCountries = async () => {
+//       try {
+//         const res = await getAllCountryIndData();
+//         setCountries(res.data);
+//       } catch (error) {
+//         console.error("Error fetching countries:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCountries();
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen flex justify-center items-center bg-slate-950">
+//         <h1 className="text-3xl font-bold text-white animate-pulse">
+//           Loading Countries...
+//         </h1>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <section className="bg-slate-950 min-h-screen py-12 px-4">
+//       <div className="max-w-7xl mx-auto">
+        
+//         {/* Heading */}
+//         <div className="text-center mb-12">
+//           <h1 className="text-4xl md:text-6xl font-bold text-white">
+//             Explore Countries
+//           </h1>
+//           <p className="text-gray-400 mt-4 text-lg">
+//             Discover information about countries around the world
+//           </p>
+
+//           <div className="mt-6 inline-block bg-blue-600 px-6 py-2 rounded-full text-white font-semibold">
+//             Total Countries: {countries.length}
+//           </div>
+//         </div>
+
+//         {/* Country Cards */}
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+//           {countries.map((country) => (
+//             <div
+//               key={country.name.common}
+//               className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/30 hover:-translate-y-2 transition-all duration-300 border border-slate-800"
+//             >
+//               {/* Flag */}
+//               <img
+//                 src={country.flags.png}
+//                 alt={country.name.common}
+//                 className="w-full h-48 object-cover"
+//               />
+
+//               {/* Content */}
+//               <div className="p-5">
+//                 <h2 className="text-2xl font-bold text-white mb-4">
+//                   {country.name.common}
+//                 </h2>
+
+//                 <div className="space-y-2 text-gray-300">
+//                   <p>
+//                     <span className="font-semibold text-white">
+//                       Capital:
+//                     </span>{" "}
+//                     {country.capital?.[0] || "N/A"}
+//                   </p>
+
+//                   <p>
+//                     <span className="font-semibold text-white">
+//                       Population:
+//                     </span>{" "}
+//                     {country.population.toLocaleString()}
+//                   </p>
+//                 </div>
+                
+
+//                <NavLink to={`/country/${country.name.common}`} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition text-center block">
+//                   Learn More
+//                 </NavLink>
+
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default Country;
+
+
+
+
+
+
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-
-const api = axios.create({
-  baseURL: "https://restcountries.com/v3.1",
-});
-
-export const getAllCountries = () => {
-  return api.get("/all?fields=name,capital,population,flags");
-};
+import { getAllCountries } from "../../api/postApi";
 
 const Country = () => {
   const [countries, setCountries] = useState([]);
@@ -82,7 +202,7 @@ const Country = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const res = await getAllCountries();
+        const res = await getAllCountries(); // এখানে ভুল ছিল
         setCountries(res.data);
       } catch (error) {
         console.error("Error fetching countries:", error);
@@ -97,7 +217,7 @@ const Country = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-slate-950">
-        <h1 className="text-3xl font-bold text-white animate-pulse">
+        <h1 className="text-3xl font-bold text-white">
           Loading Countries...
         </h1>
       </div>
@@ -106,68 +226,35 @@ const Country = () => {
 
   return (
     <section className="bg-slate-950 min-h-screen py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Heading */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-white">
-            Explore Countries
-          </h1>
-          <p className="text-gray-400 mt-4 text-lg">
-            Discover information about countries around the world
-          </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {countries.map((country) => (
+          <div key={country.name.common} className="bg-slate-900 p-5 rounded-xl">
+            <img
+              src={country.flags.png}
+              alt={country.name.common}
+              className="w-full h-48 object-cover"
+            />
 
-          <div className="mt-6 inline-block bg-blue-600 px-6 py-2 rounded-full text-white font-semibold">
-            Total Countries: {countries.length}
-          </div>
-        </div>
+            <h2 className="text-2xl text-white mt-4">
+              {country.name.common}
+            </h2>
 
-        {/* Country Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {countries.map((country) => (
-            <div
-              key={country.name.common}
-              className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-blue-500/30 hover:-translate-y-2 transition-all duration-300 border border-slate-800"
+            <p className="text-gray-300">
+              Capital: {country.capital?.[0] || "N/A"}
+            </p>
+
+            <p className="text-gray-300">
+              Population: {country.population.toLocaleString()}
+            </p>
+
+            <NavLink
+              to={`/country/${country.name.common}`}
+              className="block mt-5 bg-blue-600 text-center text-white py-2 rounded-lg"
             >
-              {/* Flag */}
-              <img
-                src={country.flags.png}
-                alt={country.name.common}
-                className="w-full h-48 object-cover"
-              />
-
-              {/* Content */}
-              <div className="p-5">
-                <h2 className="text-2xl font-bold text-white mb-4">
-                  {country.name.common}
-                </h2>
-
-                <div className="space-y-2 text-gray-300">
-                  <p>
-                    <span className="font-semibold text-white">
-                      Capital:
-                    </span>{" "}
-                    {country.capital?.[0] || "N/A"}
-                  </p>
-
-                  <p>
-                    <span className="font-semibold text-white">
-                      Population:
-                    </span>{" "}
-                    {country.population.toLocaleString()}
-                  </p>
-                </div>
-                
-
-               <NavLink to={`/country/${country.name.common}`} className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition text-center block">
-                  Learn More
-                </NavLink>
-
-              </div>
-            </div>
-          ))}
-        </div>
-
+              Learn More
+            </NavLink>
+          </div>
+        ))}
       </div>
     </section>
   );
